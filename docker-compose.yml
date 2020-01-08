@@ -1,0 +1,14 @@
+version: '3'
+services:
+  dmq-blog:
+    build: .
+    image: 119.228.2.230:5000/dmq_blog:test
+    container_name: dmq_blog-test
+    ports:
+      - "9999:80"
+    volumes:
+      - "/workspace/project/dmq_blog:/app"
+      - "/workspace/logs/dmq_blog:/var/log/uwsgi"
+    environment:
+      UWSGI_INI: /app/uwsgi.ini
+
