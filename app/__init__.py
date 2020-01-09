@@ -6,6 +6,7 @@ from flask import Flask
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import import_string
+from flask_cors import CORS
 
 # from app.exts import mgo_client
 # from app.middlewares import AuthMiddleware
@@ -37,6 +38,7 @@ def register_middleware(app, middlewares):
 def create_app(config):
     app = Flask(config.APP_NAME)
     app.config.from_object(config)
+    CORS(app)
     # register_middleware(app, AuthMiddleware)
     # register_extensions(app)
     register_blueprints(app, business_modules)
