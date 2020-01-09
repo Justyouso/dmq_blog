@@ -264,7 +264,7 @@ class User(db.Model):
                 db.session.commit()
 
     def __repr__(self):
-        return '<User % r>' % self.username
+        return self.username
 
 
 # 文章表
@@ -280,6 +280,7 @@ class Article(db.Model):
     body_html = db.Column(db.Text)
     title_html = db.Column(db.Text)
     comments = db.relationship('Comment', backref='Article', lazy='dynamic')
+    reader_count = db.Column(db.Integer, default=0)
 
     @staticmethod
     def generate_fake(count=100):
