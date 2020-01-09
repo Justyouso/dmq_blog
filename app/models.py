@@ -87,7 +87,7 @@ class User(db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow,
                           verbose_name="登录时间")
     avatar_hash = db.Column(db.String(32), verbose_name="头像")
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    articles = db.relationship('Article', backref='author', lazy='dynamic')
     followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
                                lazy='dynamic', cascade='all,delete-orphan')
@@ -250,8 +250,8 @@ class User(db.Model):
         return self.followers.filter_by(follower_id=user.id).first() is not None
 
     @property
-    def followed_posts(self):
-        return Post.query.join(Follow, Follow.followed_id == Post.author_id) \
+    def followed_articles(self):
+        return Article.query.join(Follow, Follow.followed_id == Article.author_id) \
             .filter(Follow.follower_id == self.id)
 
     @staticmethod
@@ -268,17 +268,18 @@ class User(db.Model):
 
 
 # 文章表
-class Post(db.Model):
-    __tablename__ = 'posts'
+class Article(db.Model):
+    __tablename__ = 'articles'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     body = db.Column(db.Text)
+    summary = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True,
                           default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     body_html = db.Column(db.Text)
     title_html = db.Column(db.Text)
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='Article', lazy='dynamic')
 
     @staticmethod
     def generate_fake(count=100):
@@ -290,7 +291,7 @@ class Post(db.Model):
         for i in range(count):
             u = User.query.offset(
                 randint(0, user_count - 1)).first()
-            p = Post(body=forgery_py.lorem_ipsum.sentences(
+            p = Article(body=forgery_py.lorem_ipsum.sentences(
                 randint(1, 3)),
                 timestamp=forgery_py.date.date(True),
                 author=u)
@@ -323,7 +324,7 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     disabled = db.Column(db.Boolean)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):

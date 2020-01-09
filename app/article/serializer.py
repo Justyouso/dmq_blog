@@ -4,8 +4,8 @@
 
 from flask_restful import fields
 
-
 ArticleListSerializer = {
-    "id":            fields.Integer(),
-    "title":          fields.String(default="")
+    "id": fields.Integer(),
+    "title": fields.String(default=""),
+    "summary": fields.String(default="")
 }

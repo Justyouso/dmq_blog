@@ -7,7 +7,7 @@ from flask_restful import Resource, marshal, reqparse
 from app.article.serializer import ArticleListSerializer
 from app.utils import pagination
 
-from app.models import Post
+from app.models import Article
 
 
 class ArticleList(Resource):
@@ -21,10 +21,10 @@ class ArticleList(Resource):
         args = self.parser.parse_args()
         start_idx, end_idx = pagination(args["page"], args["offset"])
         if args["title"]:
-            post_list = Post.query.filter(
-                Post.title.like('%' + args["title"] + '%')).all()
+            post_list = Article.query.filter(
+                Article.title.like('%' + args["title"] + '%')).all()
         else:
-            post_list = Post.query.all()
+            post_list = Article.query.all()
         data = [marshal(item, ArticleListSerializer) for item in post_list][
                start_idx:end_idx]
         return {"data": data, "total": len(post_list)}, 200
