@@ -16,7 +16,8 @@ db = SQLAlchemy()
 
 business_modules = [
     # "app.login:login",
-    "app.article:article"
+    "app.article:article",
+    "app.user:user"
 ]
 
 
